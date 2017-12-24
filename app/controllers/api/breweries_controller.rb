@@ -4,7 +4,7 @@ class Api::BreweriesController < ApplicationController
   # brewery_db.brewery('d1zSa7').beers
 
   def all
-    send_response(brew_client.breweries.all(p: @page))
+    send_response(brew_client.breweries.all(p: @page, established: 2017))
   end
 
   def by_name

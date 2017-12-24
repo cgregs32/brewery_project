@@ -1,0 +1,18 @@
+
+.topBanner{
+  height: 65vh;
+}
+.topBannerText{
+  padding-top: 6em;
+  background-color: rgba(22, 22, 22, .6);
+  color: white;
+}
+h1{
+  font-size: 32px;
+}
+h3{
+  font-size: 22px;
+}
+h4{
+  font-size: 18px;
+}
