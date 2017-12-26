@@ -9,11 +9,10 @@ class BreweriesList extends React.Component {
   mapBreweries(){
     return this.props.breweries.map(brewery =>
 
-        <Brewery
-          key={brewery.id}
-          {...brewery}
-        />
-
+      <Brewery
+        key={brewery.id}
+        {...brewery}
+      />
     );
   }
 
@@ -25,6 +24,7 @@ class BreweriesList extends React.Component {
     )
   }
 }
+
 const styles = {
   header: {
     color: 'white'

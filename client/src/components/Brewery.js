@@ -7,11 +7,11 @@ import { Header, Segment, Divider, Grid, Image, Button, Card, Icon } from 'seman
 class Brewery extends React.Component{
 
   paginateText(text){
-    debugger
+    const TEXT_LENGTH = 100
     const paginate = text
     if (text)
-      if(text.length > 250)
-        return paginate.slice(200, -1) + '...';
+      if(text.length > TEXT_LENGTH)
+        return paginate.slice(0, TEXT_LENGTH) + '...';
       return text
   }
 
@@ -27,21 +27,25 @@ class Brewery extends React.Component{
               <Card.Header style={styles.cardName}>{name}</Card.Header>
               <Divider />
               <Card.Meta>Established in {established}</Card.Meta>
-              <Card.Description>{this.paginateText(description)}</Card.Description>
+              <Card.Description style={styles.description}>
+                {this.paginateText(description)}
+              </Card.Description>
             </Card.Content>
             <Card.Content extra>
-              <a>
-                <Icon name='user' />
-                10 Friends
-              </a>
+              <Button.Group >
+                  <Button style={styles.buttons} color='blue'>More Info</Button>
+                  <Button.Or />
+                  <Button style={styles.buttons} positive>Select</Button>
+                </Button.Group>
             </Card.Content>
           </Grid.Column>
 
           <Grid.Column verticalAlign='middle' width={8}>
             {images ?
               <Image
-                floated="right"
-                src={images.large}
+                centered
+                size='medium'
+                src={images.square_large}
                 alt={`${name} logo`}
               />
               :
@@ -60,6 +64,13 @@ class Brewery extends React.Component{
 }
 
 const styles = {
+  description: {
+    paddingTop: '1em',
+    paddingBottom: '2em',
+  },
+  buttons: {
+    width: '65%',
+  },
   card: {
     color: 'black',
     height: '300px',

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Header, Segment, Divider, Grid, Image, Button, Card, Icon } from 'semantic-ui-react';
+import { Step, Header, Segment, Divider, Grid, Image, Button, Card, Icon } from 'semantic-ui-react';
 import ReactMarkDown from 'react-markdown';
 import axios from 'axios';
 import background from '../images/landing.jpg';
@@ -11,7 +11,7 @@ import '../styles/home.css'
 
 
 class Home extends Component {
-  state = { breweries: [], started: false };
+  state = { breweries: [], started: false,  };
 
   componentDidMount() {
     axios.get('/api/all_breweries?page=1&per_page=10')
@@ -25,8 +25,44 @@ class Home extends Component {
   }
 
   filterForm = () => {
-
+    //todo: render form and use that data to return different data
   }
+
+  defaultSteps(){
+    return(
+      <Segment style={styles.icons}>
+        <Icon name='beer'></Icon>
+        <Icon name='cart'></Icon>
+        <Icon name='truck'></Icon>
+        <Icon name='time'></Icon>
+      </Segment>
+
+    )
+  }
+
+  steps = () => (
+    <Step.Group ordered>
+      <Step completed>
+        <Step.Content>
+          <Step.Title>Brewery</Step.Title>
+          <Step.Description>Pick a Brewery to select </Step.Description>
+        </Step.Content>
+      </Step>
+
+      <Step completed={false}>
+        <Step.Content>
+          <Step.Title>Billing</Step.Title>
+          <Step.Description>Enter billing information</Step.Description>
+        </Step.Content>
+      </Step>
+
+      <Step active>
+        <Step.Content>
+          <Step.Title>Confirm Order</Step.Title>
+        </Step.Content>
+      </Step>
+    </Step.Group>
+  )
 
   renderBreweries() {
     return(
@@ -53,7 +89,7 @@ class Home extends Component {
 
 
     return(
-      <Segment basic >
+      <Segment centered basic >
         <Segment basic style={styles.topBanner} className='topBanner'>
           <Segment basic style={styles.topBannerText} className='topBannerText' textAlign='center'>
             <Header as='h1' style={styles.header}>Beer Time</Header>
@@ -62,11 +98,8 @@ class Home extends Component {
             <Button onClick={() => this.setState({ started: true })}>Get Started</Button>
           </Segment>
         </Segment>
-        <Segment style={styles.icons}>
-          <Icon name='beer'></Icon>
-          <Icon name='cart'></Icon>
-          <Icon name='truck'></Icon>
-          <Icon name='time'></Icon>
+        <Segment centered>
+          {this.state.started ? this.steps() : this.defaultSteps()}
         </Segment>
         <Grid centered>
           {this.state.started ? this.renderBreweries() : null }
