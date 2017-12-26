@@ -20,7 +20,6 @@ class BreweryShow extends React.Component {
 
   renderShow = () => {
     const { name } = this.state.brewery[0]
-    console.log()
     return(
       <Segment>
         <Grid celled>

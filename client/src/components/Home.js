@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import { Step, Header, Segment, Divider, Grid, Image, Button, Card, Icon } from 'semantic-ui-react';
-import ReactMarkDown from 'react-markdown';
+import {Header, Segment, Divider, Grid, Button, Icon } from 'semantic-ui-react';
 import axios from 'axios';
 import background from '../images/landing.jpg';
-import placeholder from '../images/placeholder.jpg';
 import BreweriesList from './BreweriesList'
 import '../styles/home.css'
 import {setFlash} from '../actions/flash'
@@ -68,7 +66,6 @@ class Home extends Component {
 
   renderBreweries() {
     return(
-      <Segment basic>
         <Grid.Column computer={16} tablet={8} mobile={16}>
           <Segment textAlign='center' inverted>
             <Header
@@ -83,7 +80,6 @@ class Home extends Component {
           </Segment>
           <BreweriesList breweries={this.state.breweries} />
         </Grid.Column>
-      </Segment>
     )
   }
 
@@ -91,12 +87,28 @@ class Home extends Component {
     this.fetchBrews(this.props, this.state.page + 1)
   }
 
+  infiniteScroll = (page, hasMore) => {
+    return(
+      <InfiniteScroll
+        pageStart={page}
+        loadMore={this.loadMoreBrews}
+        hasMore={hasMore}
+        useWindow={false}
+        >
+        <Grid>
+          { this.renderBreweries() }
+        </Grid>
+      </InfiniteScroll>
+
+    )
+  }
+
 
   render() {
     const {page, hasMore} = this.state
 
     return(
-      <Segment basic >
+      <Segment basic style={styles.scroll}>
         <Segment basic style={styles.topBanner} className='topBanner'>
           <Segment basic style={styles.topBannerText} className='topBannerText' textAlign='center'>
             <Header as='h1' style={styles.header}>Beer Time</Header>
@@ -105,19 +117,7 @@ class Home extends Component {
             <Button onClick={() => this.setState({ started: true })}>Get Started</Button>
           </Segment>
         </Segment>
-        if(this.state.started)
-          <Segment  style={styles.scroll}>
-            <InfiniteScroll
-              pageStart={page}
-              loadMore={this.loadMoreBrews}
-              hasMore={hasMore}
-              useWindow={false}
-            >
-              <Grid>
-                { this.renderBreweries() }
-              </Grid>
-            </InfiniteScroll>
-          </Segment>
+        {this.state.started ? this.infiniteScroll(page, hasMore) : null}
       </Segment>
     );
   }
