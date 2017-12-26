@@ -4,10 +4,14 @@ class Api::BreweriesController < ApplicationController
   # brewery_db.brewery('d1zSa7').beers
 
   def all
-    send_response(brew_client.breweries.all(p: @page, established: 2017))
+    send_response(brew_client.breweries.all(p: @page))
   end
 
   def by_name
     send_response(brew_client.breweries.all(name: params[:name], p: @page))
+  end
+
+  def by_id
+    send_response(brew_client.breweries.all(ids: params[:id], p: @page))
   end
 end

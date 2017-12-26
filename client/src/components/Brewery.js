@@ -1,5 +1,6 @@
 import React from 'react'
 import placeholder from '../images/placeholder.jpg';
+import { Link } from 'react-router-dom';
 
 import { Header, Segment, Divider, Grid, Image, Button, Card, Icon } from 'semantic-ui-react';
 
@@ -17,7 +18,7 @@ class Brewery extends React.Component{
 
   render(){
 
-    const { name, description, images, established } = this.props
+    const { name, description, images, established, id } = this.props
     return (
 
       <Card fluid style={styles.card}>
@@ -33,7 +34,9 @@ class Brewery extends React.Component{
             </Card.Content>
             <Card.Content extra>
               <Button.Group >
-                  <Button style={styles.buttons} color='blue'>More Info</Button>
+                  <Button style={styles.buttons} color='blue'>
+                    <Link to={`/brewery/${id}`}>More Info</Link>
+                  </Button>
                   <Button.Or />
                   <Button style={styles.buttons} positive>Select</Button>
                 </Button.Group>

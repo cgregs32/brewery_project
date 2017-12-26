@@ -6,22 +6,48 @@ import background from '../images/landing.jpg';
 import placeholder from '../images/placeholder.jpg';
 import BreweriesList from './BreweriesList'
 import '../styles/home.css'
+import {setFlash} from '../actions/flash'
+import InfiniteScroll from 'react-infinite-scroller';
+
+
 
 // <Image style={styles.centered} size='large' src='../images/landing.jpg' alt='DevPoint Studios Logo' />
 
 
 class Home extends Component {
-  state = { breweries: [], started: false,  };
+  state = { breweries: [], loaded: false, started: false, page: 1, hasMore: true  };
 
-  componentDidMount() {
-    axios.get('/api/all_breweries?page=1&per_page=10')
+  componentWillMount() {
+    this.fetchBrews(this.props)
+  }
+
+  // componentWillReceiveProps(nextProps) {
+  //   this.setState({ tweets: [], loaded: false, hasMore: true, page: 1 });
+  //   this.fetchTweets(nextProps, 1);
+  // }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({ breweries: [], hasMore: true, page: 1});
+    this.fetchBrews(nextProps, 1)
+  }
+
+  fetchBrews = (props, page = 1) => {
+    const URL = '/api/all_breweries'
+    const query = `?page=${page}&per_page=10`
+    axios.get(`${URL}${query}`)
       .then(res => {
         console.log(res.data)
-        this.setState({ breweries: res.data.entries })
+        if(res.data.total_pages){
+          if(res.data.total_pages === page)
+            this.setState({hasMore: false})
+          this.setState({breweries: [...this.state.breweries, ...res.data.entries], total_pages: res.data.total_pages, page})
+        }else
+        this.setState({ breweries: res.data.entries, hasMore: false })
       })
       .catch( error => {
-        console.log(error.response);
+        this.props.dispatch(setFlash('We had trouble retreiving your request.', 'red'))
     });
+
   }
 
   filterForm = () => {
@@ -40,56 +66,37 @@ class Home extends Component {
     )
   }
 
-  steps = () => (
-    <Step.Group ordered>
-      <Step completed>
-        <Step.Content>
-          <Step.Title>Brewery</Step.Title>
-          <Step.Description>Pick a Brewery to select </Step.Description>
-        </Step.Content>
-      </Step>
-
-      <Step completed={false}>
-        <Step.Content>
-          <Step.Title>Billing</Step.Title>
-          <Step.Description>Enter billing information</Step.Description>
-        </Step.Content>
-      </Step>
-
-      <Step active>
-        <Step.Content>
-          <Step.Title>Confirm Order</Step.Title>
-        </Step.Content>
-      </Step>
-    </Step.Group>
-  )
-
   renderBreweries() {
     return(
-      <Grid.Column computer={16} tablet={8} mobile={16}>
-        <Segment textAlign='center' inverted>
-
-          <Header
-            as='h1'
-
-            style={styles.header}>
-            Select From Many Breweries
-          </Header>
-          <Divider />
-          <Button>
-            Filter Results
-          </Button>
-        </Segment>
-        <BreweriesList breweries={this.state.breweries} />
-      </Grid.Column>
+      <Segment basic>
+        <Grid.Column computer={16} tablet={8} mobile={16}>
+          <Segment textAlign='center' inverted>
+            <Header
+              as='h1'
+              style={styles.header}>
+              Select From Many Breweries
+            </Header>
+            <Divider />
+            <Button>
+              Filter Results
+            </Button>
+          </Segment>
+          <BreweriesList breweries={this.state.breweries} />
+        </Grid.Column>
+      </Segment>
     )
   }
 
-  render() {
+  loadMoreBrews = () => {
+    this.fetchBrews(this.props, this.state.page + 1)
+  }
 
+
+  render() {
+    const {page, hasMore} = this.state
 
     return(
-      <Segment centered basic >
+      <Segment basic >
         <Segment basic style={styles.topBanner} className='topBanner'>
           <Segment basic style={styles.topBannerText} className='topBannerText' textAlign='center'>
             <Header as='h1' style={styles.header}>Beer Time</Header>
@@ -98,18 +105,30 @@ class Home extends Component {
             <Button onClick={() => this.setState({ started: true })}>Get Started</Button>
           </Segment>
         </Segment>
-        <Segment centered>
-          {this.state.started ? this.steps() : this.defaultSteps()}
-        </Segment>
-        <Grid centered>
-          {this.state.started ? this.renderBreweries() : null }
-        </Grid>
+        if(this.state.started)
+          <Segment  style={styles.scroll}>
+            <InfiniteScroll
+              pageStart={page}
+              loadMore={this.loadMoreBrews}
+              hasMore={hasMore}
+              useWindow={false}
+            >
+              <Grid>
+                { this.renderBreweries() }
+              </Grid>
+            </InfiniteScroll>
+          </Segment>
       </Segment>
     );
   }
 }
 
 const styles = {
+  scroll: {
+    height: '100vh',
+    overflowY: 'scroll',
+    overflowX: 'hidden',
+  },
   card: {
     color: 'black',
     height: '300px',
