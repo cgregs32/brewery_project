@@ -5,7 +5,7 @@ import axios from 'axios'
 import {connect} from 'react-redux'
 import {paginateText} from '../utils/module'
 
-import { Button, Card, Segment, Header, Grid, Label, Image } from 'semantic-ui-react'
+import { Card, Segment, Header, Grid, Label, Image } from 'semantic-ui-react'
 
 class Beers extends React.Component {
   state = { beers: [], hadMore: true, page: 1, loaded: false}
@@ -13,6 +13,11 @@ class Beers extends React.Component {
 
   componentWillMount() {
     this.fetchBeers(this.props)
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({ beers: [], hasMore: true, page: 1});
+    this.fetchBeers(nextProps, 1)
   }
 
   fetchBeers = (props, page = 1) => {
@@ -53,7 +58,7 @@ class Beers extends React.Component {
     return this.state.beers.map( beer => {
 
       return(
-         <Card key={beer.id}>
+         <Card key={beer.name}>
            <Card.Content>
              {beer.labels ?
                <Image floated='right' size='mini' src={beer.labels.icon} />
@@ -81,30 +86,26 @@ class Beers extends React.Component {
     const { page, hasMore } = this.state
 
     return(
-      <Segment basic>
+      <Segment basic style={styles.scroll}>
         <Segment>
           <Header as='h1'>
             Beers From Our Selection
           </Header>
         </Segment>
-        <InfiniteScroll
-          pageStart={page}
-          loadMore={this.loadMoreBeers}
-          hasMore={hasMore}
-          useWindow={false}
+          <InfiniteScroll
+            pageStart={page}
+            loadMore={this.loadMoreBeers}
+            hasMore={hasMore}
+            useWindow={false}
           >
-          <Segment basic style={styles.scroll}>
-            <Grid centered>
-              <Grid.Row centered>
-                <Grid.Column>
-                  <Card.Group>
-                    {this.mapBeers()}
-                  </Card.Group>
-                </Grid.Column>
+            <Grid>
+              <Grid.Row >
+                <Card.Group>
+                  { this.mapBeers() }
+                </Card.Group>
               </Grid.Row>
             </Grid>
-          </Segment>
-        </InfiniteScroll>
+          </InfiniteScroll>
       </Segment>
     )
   }

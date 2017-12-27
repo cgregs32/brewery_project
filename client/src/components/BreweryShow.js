@@ -1,7 +1,8 @@
 import React from 'react'
 import axios from 'axios'
+import {connect} from 'react-redux'
 import {setFlash} from '../actions/flash'
-import {Loader, Segment, Dimmer, Grid, Image, Statistic, Header, Divider} from 'semantic-ui-react'
+import {Loader, Segment, Dimmer, Grid, Statistic, Header, Divider} from 'semantic-ui-react'
 
 
 class BreweryShow extends React.Component {
@@ -13,8 +14,8 @@ class BreweryShow extends React.Component {
       .then(res => {
         this.setState({brewery: res.data.entries[0], loaded: true})
       }).catch( err => {
-        // debugger
-        // this.props.dispatch(setFlash('We had trouble retreiving your request.', 'red'))
+        debugger
+        this.props.dispatch(setFlash('We had trouble retreiving your request.', 'red'))
     })
   }
 
@@ -114,4 +115,4 @@ const styles = {
 }
 
 
-export default BreweryShow;
+export default connect()(BreweryShow);

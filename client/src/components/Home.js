@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {connect} from 'react-redux'
 import {Header, Segment, Divider, Grid, Button, Icon } from 'semantic-ui-react';
 import axios from 'axios';
 import background from '../images/landing.jpg';
@@ -29,7 +30,6 @@ class Home extends Component {
     const query = `?page=${page}&per_page=10`
     axios.get(`${URL}${query}`)
       .then(res => {
-        console.log(res.data)
         if(res.data.total_pages){
           if(res.data.total_pages === page)
             this.setState({hasMore: false})
@@ -154,4 +154,4 @@ const styles = {
   }
 }
 
-export default Home;
+export default connect()(Home);
