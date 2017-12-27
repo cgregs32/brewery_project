@@ -19,11 +19,6 @@ class Home extends Component {
     this.fetchBrews(this.props)
   }
 
-  // componentWillReceiveProps(nextProps) {
-  //   this.setState({ tweets: [], loaded: false, hasMore: true, page: 1 });
-  //   this.fetchTweets(nextProps, 1);
-  // }
-
   componentWillReceiveProps(nextProps) {
     this.setState({ breweries: [], hasMore: true, page: 1});
     this.fetchBrews(nextProps, 1)

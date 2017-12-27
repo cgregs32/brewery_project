@@ -1,20 +1,14 @@
 import React from 'react'
 import placeholder from '../images/placeholder.jpg';
 import { Link } from 'react-router-dom';
+import {paginateText} from '../utils/module'
 
-import { Header, Segment, Divider, Grid, Image, Button, Card, Icon } from 'semantic-ui-react';
+import { Divider, Grid, Image, Button, Card } from 'semantic-ui-react';
 
 
 class Brewery extends React.Component{
 
-  paginateText(text){
-    const TEXT_LENGTH = 100
-    const paginate = text
-    if (text)
-      if(text.length > TEXT_LENGTH)
-        return paginate.slice(0, TEXT_LENGTH) + '...';
-      return text
-  }
+
 
   render(){
 
@@ -29,13 +23,18 @@ class Brewery extends React.Component{
               <Divider />
               <Card.Meta>Established in {established}</Card.Meta>
               <Card.Description style={styles.description}>
-                {this.paginateText(description)}
+                {paginateText(description)}
               </Card.Description>
             </Card.Content>
             <Card.Content extra>
               <Button.Group >
-                  <Button style={styles.buttons} color='blue'>
-                    <Link to={`/brewery/${id}`}>More Info</Link>
+                  <Button
+                    style={styles.buttons}
+                    color='blue'
+                    as={Link}
+                    to={`/brewery/${id}`}
+                  >
+                    More Info
                   </Button>
                   <Button.Or />
                   <Button style={styles.buttons} positive>Select</Button>

@@ -1,7 +1,6 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import Brewery from './Brewery'
-import { Header, Segment, Divider, Grid, Image, Button, Card, Icon } from 'semantic-ui-react';
+import { Segment } from 'semantic-ui-react';
 
 
 class BreweriesList extends React.Component {
@@ -18,17 +17,12 @@ class BreweriesList extends React.Component {
 
   render () {
     return(
-      <div>
+      <Segment basic>
         {this.mapBreweries()}
-      </div>
+      </Segment>
     )
   }
 }
 
-const styles = {
-  header: {
-    color: 'white'
-  },
-}
 
 export default BreweriesList;
