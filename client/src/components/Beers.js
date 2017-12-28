@@ -4,12 +4,21 @@ import InfiniteScroll from 'react-infinite-scroller';
 import axios from 'axios'
 import {connect} from 'react-redux'
 import {paginateText} from '../utils/module'
+import SearchBar from './SearchBar'
 
 import { Card, Segment, Header, Grid, Label, Image } from 'semantic-ui-react'
 
 class Beers extends React.Component {
   state = { beers: [], hadMore: true, page: 1, loaded: false}
 
+  beerSearch = (search) => {
+    axios.get(`/api/beer/${search}`)
+      .then(res => {
+        console.log(res.data)
+        this.setState({beers: []})
+        this.setState({beers: res.data.entries})
+      })
+  }
 
   componentWillMount() {
     this.fetchBeers(this.props)
@@ -31,7 +40,7 @@ class Beers extends React.Component {
             this.setState({hasMore: false})
           this.setState({beers: [...this.state.beers, ...res.data.entries], total_pages: res.data.total_pages, page})
         }else
-          this.setState({ beers: res.data.entries, hasMore: false})
+        this.setState({ beers: res.data.entries, hasMore: false})
       }).catch( err => {
         this.props.dispatch(setFlash('We had trouble retreiving your request.', 'red'))
     });
@@ -58,7 +67,7 @@ class Beers extends React.Component {
     return this.state.beers.map( beer => {
 
       return(
-         <Card key={beer.name}>
+         <Card key={beer.id}>
            <Card.Content>
              {beer.labels ?
                <Image floated='right' size='mini' src={beer.labels.icon} />
@@ -90,6 +99,9 @@ class Beers extends React.Component {
         <Segment>
           <Header as='h1'>
             Beers From Our Selection
+          </Header>
+          <Header as='h3' >
+            <SearchBar onSearchTermChange={this.beerSearch}/>
           </Header>
         </Segment>
           <InfiniteScroll

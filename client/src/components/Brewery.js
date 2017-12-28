@@ -3,6 +3,7 @@ import placeholder from '../images/placeholder.jpg';
 import { Link } from 'react-router-dom';
 import {paginateText} from '../utils/module'
 
+
 import { Divider, Grid, Image, Button, Card } from 'semantic-ui-react';
 
 

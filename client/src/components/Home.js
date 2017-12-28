@@ -7,17 +7,22 @@ import BreweriesList from './BreweriesList'
 import '../styles/home.css'
 import {setFlash} from '../actions/flash'
 import InfiniteScroll from 'react-infinite-scroller';
-
-
-
-// <Image style={styles.centered} size='large' src='../images/landing.jpg' alt='DevPoint Studios Logo' />
-
+import SearchBar from './SearchBar'
 
 class Home extends Component {
   state = { breweries: [], loaded: false, started: false, page: 1, hasMore: true  };
 
   componentWillMount() {
     this.fetchBrews(this.props)
+  }
+
+  brewerySearch = (search) => {
+    axios.get(`/api/search_breweries?query=${search}`)
+      .then(res => {
+        console.log(res.data)
+        this.setState({breweries: []})
+        this.setState({breweries: res.data.entries})
+      })
   }
 
   componentWillReceiveProps(nextProps) {
@@ -43,22 +48,6 @@ class Home extends Component {
 
   }
 
-  filterForm = () => {
-    //todo: render form and use that data to return different data
-  }
-
-  defaultSteps(){
-    return(
-      <Segment style={styles.icons}>
-        <Icon name='beer'></Icon>
-        <Icon name='cart'></Icon>
-        <Icon name='truck'></Icon>
-        <Icon name='time'></Icon>
-      </Segment>
-
-    )
-  }
-
   renderBreweries() {
     return(
         <Grid.Column computer={16} tablet={8} mobile={16}>
@@ -69,9 +58,7 @@ class Home extends Component {
               Select From Many Breweries
             </Header>
             <Divider />
-            <Button>
-              Filter Results
-            </Button>
+            <SearchBar onSearchTermChange={this.brewerySearch}/>
           </Segment>
           <BreweriesList breweries={this.state.breweries} />
         </Grid.Column>
